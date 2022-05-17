@@ -47,7 +47,7 @@ const person = {
   name: 'Eason',
   age: 30
 }
-for (ley key in person) {
+for (let key in person) {
   console.log(key, person[key]);
 }
 
