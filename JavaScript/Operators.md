@@ -62,6 +62,7 @@ let type = condition ? value1 : value2
 // let userColor = 'red';
 // let defaultColor = 'blue';
 // let currentColor = userColor || defaultColor;
+// 先判断 operator 的类型, 再从左往右判断每一个 element 是 truthy 还是 falsy, 碰到第一个 truthy element 的时候将其返回 
 ```
 
 ## Bitwise Operators
