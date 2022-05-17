@@ -77,3 +77,72 @@ function increase(number) {
 increase(number);
 consile.log(number) // 10 => pass 的是 value
 ```
+
+## Enumerating Properties of an Object
+```js
+const circle = {
+  radius: 1,
+  draw() {
+    console.log('draw');
+}
+
+for (let key in circle) {
+  console.log(key, circle[key]);
+}
+
+for (let key of Object.keys(circle)) {
+  console.log(key);
+}
+
+for (let entry of Object.entries(circle)) {
+  console.log(entry);
+}
+
+if ('radius' in circle) console.log('yes');
+```
+
+## 克隆 Object
+```js
+const circle = {
+  radius: 1,
+  draw() {
+    console.log('draw');
+}
+
+// Old way
+const another = {}
+for (let key in circle) {
+  another[key] = circle[key]; 
+}
+
+// Modern way 1
+const another = Object.assign({}, circle);
+
+// Modern way 2
+const another = { ...circle };
+```
+
+## Math Oject
+看文档
+
+## String
+```js
+// String primitive
+const message = 'hi';
+message.length  // 有一个底层运作的 wrapper 把 message warp 成 String object
+// String object
+const another = new String('hi');
+```
+
+## Template Literals
+```js
+const message = 'This is my \n first message';
+const another = `This is my 'first' message ${name}` ${2 + 3};
+```
+
+## Date
+```js
+const now = new Date();
+const date1 = new Date('May 11 2018 09:00');
+const date2 = new Date(2018, 4, 11, 9);
+```
