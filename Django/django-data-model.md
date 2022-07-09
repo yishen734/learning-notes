@@ -7,19 +7,26 @@
 ![image](https://user-images.githubusercontent.com/70382342/159122531-bb48e104-2726-41ee-a3a7-f3b2cb674ab2.png)
 ![image](https://user-images.githubusercontent.com/70382342/159122572-ce48d8cd-38dd-4a2d-9dbb-f51dbcc86748.png)
 
-Each app should only do one thing and do it well. Instead of putting everything together in the project (Monolith), we split the project into multiple apps.
-Bad example:
+Each app should only do one thing and do it well. Instead of putting everything together in the project (Monolith), we split the project into multiple apps. 
+
+### Bad Example
+
 ![image](https://user-images.githubusercontent.com/70382342/159122743-1789612c-349e-4ba1-b222-9edc4a22edf0.png)
-一个崩了，有 dependency的全部崩
 
-Cart 和 Order 不应该分开，没有 Order，有 Cart 毫无意义
-所以我们需要把 highly-related 的 app 合并在一起
+#### 这样设计的问题
+一个 app 崩了或者被更新了, 有 dependency 的 app 全部都要修改. 况且 Cart 和 Order 不应该分开, 没有 Order, 有 Cart 毫无意义. 所以我们需要把 highly-related 的 app 合并在一起.
 
-如何分解呢？分析如下
-1. 首先 tag 不是 project-specific 的，它可以用在任何其他 project 中，所以可以把 tag 单独分离出来成一个 app
+<br>
+
+#### 如何分解呢?
+
+首先 tag 不是 project-specific 的, 它可以用在任何其他 project 中, 所以可以把 tag 单独分离出来成一个 app
 ![image](https://user-images.githubusercontent.com/70382342/159122898-71fbd50f-36cd-42ee-a6b0-c3885fca2dde.png)
 
 把所有的东西都放在一起会很难 maintain，但是把 application 拆分的过细，会导致它们之间有过多的 coupling
+
+
+#### 小结
 一个好的拆分应该是使得 apps 之间由最小的 coupling，同时保证最大的 cohension (每一个 app 只 focus 在一件事情上面)
 
 根据上面的分析，我们现在创建 store 和 tags 两个 app
