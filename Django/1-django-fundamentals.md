@@ -49,6 +49,8 @@ The ```view function``` takes a request and return a response. It is a request h
 
 First, we define a view function.
 ```python3
+# playground/views.py
+
 '''
 When the user visit the url "xxx/playground/hello",
 this function should be called
@@ -59,6 +61,8 @@ def say_hello(request):
 
 Secondly, we need to create a file named ```urls.py``` to construct the mappings from URLs to view functions
 ```python3
+# playground/urls.py
+
 from django.urls import path
 from . import views
 
@@ -70,6 +74,8 @@ urlpatterns = [
 
 Finally, we edit the ```urls.py``` of the ```main application``` (the main URL handler) which processes and redirects the original URL to other application's URL handlers.
 ```python3
+# frontstore/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
 
@@ -84,7 +90,7 @@ For example, if the original URL is ```xxx/playground/hello```, the main URL han
 Template is more like a view that the user can actually see it. It is normally a html file that is returned by the view function (which normally return a HttpResponse). However, nowadays we normmaly don't use template that often. Instead, we use django rest API.
 
 ```python3
-# hello.html
+# playground/templates/hello.html
 {% if name %}
 <h1> Hello {{ name }} </h1>
 {% else %}
@@ -93,7 +99,7 @@ Template is more like a view that the user can actually see it. It is normally a
 ```
 
 ```python3
-# views.py
+# playground/views.py
 def say_hello(request):
     return render(request, 'hello.html', { 'name': 'Eason' })
 ```
