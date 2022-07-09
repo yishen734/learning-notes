@@ -1,42 +1,48 @@
 # Build a Data Model
-### Relationship Between Models
-1. One-to-one
-2. One-to-many
-3. Many-to-many
+## 模型关系
+- One-to-one: 
+
+- One-to-many: 
+E.g. ```Customers (one)``` and ```Orders (many)```. 在 Django 中, 我们把 ``` Customers (parent)``` 作为 ```外键 (foreign key)``` 添加到 ```Orders (child)``` 类中. 
+
+- Many-to-many: 
+E.g. ```Orders (many)``` and ```Tags (many)```. 在 Django 中, 我们把 ```Tags``` 通过 ```ManyToManyField``` 添加到 ```Orders``` 类中, 或者我们也可以通过使用两个外键来将它们关联在一起. 两种方法是等价的.
 
 ![image](https://user-images.githubusercontent.com/70382342/159122531-bb48e104-2726-41ee-a3a7-f3b2cb674ab2.png)
 ![image](https://user-images.githubusercontent.com/70382342/159122572-ce48d8cd-38dd-4a2d-9dbb-f51dbcc86748.png)
 
-Each app should only do one thing and do it well. Instead of putting everything together in the project (Monolith), we split the project into multiple apps. 
 
-### Bad Example
+## 如何设计模型间的关系
+每个 app 都应该只做一件事, 并且做好这件事. 我们应当把项目分成多个 app, 而不是把所有东西都放在一起 (Monolith).
+
+### 不好的设计案例
 
 ![image](https://user-images.githubusercontent.com/70382342/159122743-1789612c-349e-4ba1-b222-9edc4a22edf0.png)
 
-#### 这样设计的问题
-一个 app 崩了或者被更新了, 有 dependency 的 app 全部都要修改. 况且 ```Cart``` 和 ```Order``` 不应该分开, 没有 ```Order```, 只有 ```Cart``` 毫无意义. 所以我们需要把 highly-related 的 app 合并在一起.
+### 这样设计的问题
+一个 app 崩了或者被更新了, 对其有依赖的所有其他 apps 都要修改, 即牵一发而动全身. 同时, ```Cart``` 和 ```Order``` 本就不应该分开. 只有 ```Cart``` 而没有 ```Order``` 毫无意义. 因此, 我们需要把高度相关的 apps 合并在一起.
+
+> 把所有的东西都放在一起会很难 maintain, 但是把 application 拆分的过细, 会导致它们之间有过多的 coupling.
 
 <br>
 
-#### 如何分解呢?
+### 如何正确设计?
 
-首先 ```tag``` 不是 project-specific 的, 它可以用在任何其他 project 中, 所以可以把 ```tag``` 单独分离出来成一个 app
+由于 ```tag``` 不是 project-specific 的, 即它可以用在任何其他 project 中, 所以我们可以把 ```tag``` 分离出来形成一个单独的 app.
 ![image](https://user-images.githubusercontent.com/70382342/159122898-71fbd50f-36cd-42ee-a6b0-c3885fca2dde.png)
 
-把所有的东西都放在一起会很难 maintain，但是把 application 拆分的过细, 会导致它们之间有过多的 coupling
 
+### 小结
+一个好的拆分应该是使得 apps 之间由最小的 **coupling**, 同时保证最大的 **cohension (每一个 app 只 focus 在一件事情上面)**.
 
-#### 小结
-一个好的拆分应该是使得 apps 之间由最小的 **coupling**, 同时保证最大的 **cohension (每一个 app 只 focus 在一件事情上面)**
-
-根据上面的分析，我们现在创建 ```store``` 和 ```tags``` 两个 apps
+根据上面的分析, 我们应当创建 ```store``` 和 ```tags``` 两个 apps.
 ```python3
 python manage.py startapp store
 python manage.py startapp tags
 ```
 
-### Create Models
-Let's create the model for ```Product``` and ```Customer```
+
+## Create Models
 ```python3
 from django.db import models
 
@@ -76,6 +82,19 @@ class Order(models.Model):
     ]
     place_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES)
+    
+class Address(model.Model):
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    
+    """
+    customer 应该在 Address 被创建之前就存在
+    OneToOneField 的第一个参数指的是 parent module
+    on_delete 指的是当 parent 被删除之后 child 的行为是什么 (CASCADE 指的是级联删除)
+    与此同时我们不再需要在 Customer 里面定义 address, 因为 django 会自动帮我们添加
+    如果我们想要创建 one-to-many 关系, 就需要把 OneToOneField 改成 ForeignKey
+    """
+    customer = models.OneToOneField(Customer, on_delete=model.CASCADE, primary_key=True)
 ```
 
 
