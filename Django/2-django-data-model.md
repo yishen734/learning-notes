@@ -8,31 +8,27 @@ E.g. ```Customers (one)``` and ```Orders (many)```. 在 Django 中, 我们把 ``
 - Many-to-many: 
 E.g. ```Orders (many)``` and ```Tags (many)```. 在 Django 中, 我们把 ```Tags``` 通过 ```ManyToManyField``` 添加到 ```Orders``` 类中, 或者我们也可以通过使用两个外键来将它们关联在一起. 两种方法是等价的.
 
-![image](https://user-images.githubusercontent.com/70382342/159122531-bb48e104-2726-41ee-a3a7-f3b2cb674ab2.png)
-![image](https://user-images.githubusercontent.com/70382342/159122572-ce48d8cd-38dd-4a2d-9dbb-f51dbcc86748.png)
-
+<br>
 
 ## 如何设计模型间的关系
 每个 app 都应该只做一件事, 并且做好这件事. 我们应当把项目分成多个 app, 而不是把所有东西都放在一起 (Monolith).
 
-### 不好的设计案例
 
-![image](https://user-images.githubusercontent.com/70382342/159122743-1789612c-349e-4ba1-b222-9edc4a22edf0.png)
-
-### 这样设计的问题
-一个 app 崩了或者被更新了, 对其有依赖的所有其他 apps 都要修改, 即牵一发而动全身. 同时, ```Cart``` 和 ```Order``` 本就不应该分开. 只有 ```Cart``` 而没有 ```Order``` 毫无意义. 因此, 我们需要把高度相关的 apps 合并在一起.
-
-> 把所有的东西都放在一起会很难 maintain, 但是把 application 拆分的过细, 会导致它们之间有过多的 coupling.
-
-<br>
-
-### 如何正确设计?
-
-由于 ```tag``` 不是 project-specific 的, 即它可以用在任何其他 project 中, 所以我们可以把 ```tag``` 分离出来形成一个单独的 app.
-![image](https://user-images.githubusercontent.com/70382342/159122898-71fbd50f-36cd-42ee-a6b0-c3885fca2dde.png)
+#### 不好的设计案例
+把 ```Products```, ```Orders```, ```Customers```, ```Carts``` 分离成四个不同的 apps
 
 
-### 小结
+#### 这样设计的问题
+一个 app 崩了或者被更新了, 对其有依赖的所有其他 apps 都要修改, 即牵一发而动全身. 同时, ```Cart``` 和 ```Order``` 本就不应该分开, 因为只有 ```Cart``` 而没有 ```Order``` 毫无意义. 因此, 我们需要把高度相关的 apps 合并在一起.
+
+> 把所有的东西都放在一起会很难维护, 但是把 application 拆分的过细, 会导致它们之间有过多的 coupling.
+
+
+#### 如何正确设计?
+我们应该把 ```Products```, ```Orders```, ```Customers```, ```Carts``` 放在一个 app 里面, 同时创建一个新的 ```tags``` app. 之所以 ```tags``` 应该单独成为一个 app 是由于它不是 project-specific 的, 即可以用在任何其他 project 中.
+
+
+#### 小结
 一个好的拆分应该是使得 apps 之间由最小的 **coupling**, 同时保证最大的 **cohension (每一个 app 只 focus 在一件事情上面)**.
 
 根据上面的分析, 我们应当创建 ```store``` 和 ```tags``` 两个 apps.
@@ -41,8 +37,9 @@ python manage.py startapp store
 python manage.py startapp tags
 ```
 
+<br>
 
-## Create Models
+## 创建模型的代码
 ```python3
 from django.db import models
 
