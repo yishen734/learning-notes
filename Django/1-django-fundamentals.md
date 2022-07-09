@@ -12,14 +12,20 @@ Django is a free and open-source framework for building **web applications** wit
 - Caching
 
 ### Build Up the Project Environment
-1. Install the latest-version of Python
+1. Install the latest-version of Python ```python --version```
 2. Install pipenv (a dependency manager) using ```pip install pipenv```
 3. Create a new project folder and ```cd``` into it
-4. Use ```pipenv install django``` to create an virtual enviroment (saved in the C: disk) and install Django
+4. Use ```pipenv install django``` to create an virtual enviroment (saved in the C disk, e.g.  ```C:\Users\admin\.virtualenvs\storefront-_oScpaKq```) and install Django
 5. The above command will also create two files ```Pipefile (like the package.json for JavaScript project)``` and ```Pipefile.lock```
-6. Activate the virtual enviroment using ```pipenv shell```
-7. Create the Django project using the current directory using ```django-admin startproject yourprojectname .```
+6. Activate the virtual enviroment in CMD using ```pipenv shell```
+7. Create the Django project using the current directory using ```django-admin startproject yourprojectname .``` (. means use the current dir as project root)
 8. The manage.py is a **wrapper** of django-admin and it will consider the project setting
+9. Run ```python manage.py runserver``` to start the project
+
+### Set Up the VSCode Python Intrepreter
+1. Type ```pipenv --venv``` in the CMD to get the path of vitural environment ```xxx```
+2. ```ctrl + shift + P``` => ```enter: xxx/bin/python```
+3. Open the termninal (CMD), now we can see the vitual env has been activated
 
 ### Project Structure
 1. ```__init__.py```: defines the directory as a python package
@@ -29,18 +35,17 @@ Django is a free and open-source framework for building **web applications** wit
 5. ```wsgi.py```: for deployment
 
 ### Create Application
-App represents a certain functionality of the system. After creating a new app, we need to add it into ```INSTALLED_APPS``` of ```settings.py```
-Use ```python manage.py startapp playground``` to create the app ```playground```
+App represents a certain functionality of the system. Use ```python manage.py startapp playground``` to create the app ```playground```. After creating a new app, we need to add it into ```INSTALLED_APPS``` of ```settings.py```
 
 1. ```__init__.py```: defines the directory as a python package
 2. ```admin```: django admin system
-3. ```apps.py```: configuration
+3. ```apps.py```: configuration (the app name here is confusing)
 4. ```models.py```: where we define model classes from which we pull out data from database
 5. ```tests.py```: where we write unit tests
-6. ```views.py```: where we write request handlers
+6. ```views.py```: where we write request handlers (again, the view name here is confusing)
 
 ### View
-The ```view function``` takes a request and return a response. It is a request handler.
+The ```view function``` takes a request and return a response. It is a request handler (the name view is actually confusing).
 
 First, we define a view function.
 ```python3
@@ -75,7 +80,26 @@ urlpatterns = [
 ```
 For example, if the original URL is ```xxx/playground/hello```, the main URL handler will first chop off the ```xxx/playground``` part and then redirect the rest part ```hello``` to the playground URL handler which will call the view function ```views.say_hello``` that we defined before. 
 
+### Template
+Template is more like a view that the user can actually see it. It is normally a html file that is returned by the view function (which normally return a HttpResponse). However, nowadays we normmaly don't use template that often. Instead, we use django rest API.
+
+```python3
+# hello.html
+{% if name %}
+<h1> Hello {{ name }} </h1>
+{% else %}
+<h1> Hello World </h1>
+{% endif %}
+```
+
+```python3
+# views.py
+def say_hello(request):
+    return render(request, 'hello.html', { 'name': 'Eason' })
+```
+
 ### Debugging
+TODO
 
 
 
