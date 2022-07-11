@@ -35,9 +35,8 @@ queryset[0:5]
 ```
 
 ## ORM 操作
+### Retriving 
 ```python3
-#---------------- Retriving ---------------- 
-
 # 获取所有的元素
 queryset = Product.objects.all()
  
@@ -53,9 +52,10 @@ product = Product.objects.filter(pk=1).first()
 
 # 检查某一个元素是否存在
 exists = Product.objects.filter(pk=1).exists()
+```
 
-
-# ---------------- Filtering ---------------- 
+### Filtering 
+```python3
 # 下面都是 Field lookup (通过 __ 来进行精准 filter) 的案例
 
 # 价格大于 20 的 product
@@ -75,9 +75,10 @@ queryset = Product.objects.filter(last_update__year=2021)
 
 # 不包含最后更新日期的 product
 queryset = Product.objects.filter(last_update__isnull=true)
+```
 
-
-# ---------------- Q Objects (Complex Lookup) ----------------
+### Q-Objects 
+```python3
 # 存库少于 10, 价格小于 20 的 product
 from django.db.models import Q
 queryset = Product.objects.filter(inventory__lt=10, unit_price__lt=20)
@@ -88,17 +89,19 @@ queryset = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
 
 # 存库少于 10 并且 价格不小于 20 的 product
 queryset = Product.objects.filter(Q(inventory__lt=10) & ~Q(unit_price__lt=20))
+```
 
-
-# ---------------- F Objects (Reference Other Fields) ----------------
+### F-Objects 
+```python3
 # 存库和价格相等的 product
 queryset = Product.objects.filter(inventory=F('unit_price'))
 
 # 存库和集合 ID 相等的 product
 queryset = Product.objects.filter(inventory=F('collection__id'))
+```
 
-
-# ---------------- Sorting ----------------
+### Sorting
+```python3
 # 正向排序, 反向排序 (-)
 queryset = Product.objects.order_by('title')
 queryset = Product.objects.order_by('-title')
@@ -111,14 +114,16 @@ queryset = Product.objects.order_by('unit_price')[0]
 # earliest() latest() 返回 object
 # 起到的也是正反向排序的作用
 queryset = Product.objects.earliest('unit_price')[0]
+```
 
-
-# ---------------- Limiting ----------------
+### Limiting
+```python3
 # 利用 slicing 返回部分元素 => SQL 语句里面会添加 LIMIT 命令
 queryset = Product.objects.all()[:5]
+```
 
-
-# ---------------- Selecting Fields to Query ----------------
+### Selecting Fields to Query
+```python3
 # 只选择 id, title fields, 返回 dict
 queryset = Product.objects.values('id', 'title', 'collection__title')
 
@@ -130,16 +135,18 @@ queryset = Product.objects.only('id', 'title')
 
 # in, distinct
 queryset = Product.objects.filter(id__in=OrderItem.objects.values('product_id')).distinct().order_by('title')
+```
 
-
-# ---------------- Defering Fields ----------------
+### Defering Fields
+```python3
 # 排除 field
 # 但和 only 一样, 用的时候要小心, 比如我们用 defer 排除了description
 # 但是后来又尝试去访问 description, 那么就会额外产生很多 query
 queryset = Product.objects.defer('description')
+```
 
-
-# ---------------- Selecting Related Objects ----------------
+### Selecting Related Objects
+```python3
 # 假设我们写了一下语句, 但是在前端尝试去访问 collection__title
 # 那么就会产生很多额外的 query
 queryset = Product.objects.all()
@@ -149,6 +156,4 @@ queryset = Product.objects.select_related('collection').all()
 
 # 1 对多的时候用 prefetch
 queryset = Product.objects.prefetch_related('promotion').all()
-
-
 ```
